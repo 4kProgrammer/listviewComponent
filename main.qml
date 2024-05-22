@@ -91,54 +91,55 @@ ApplicationWindow {
                 Layout.preferredHeight: 40
                 onClicked: {
                     var newCommandType = commandTypeComboBox.currentText;
-                                        var newParameters;
+                    var newParameters;
 
-                                        switch (newCommandType) {
-                                            case "A command":
-                                                newParameters = [
-                                                    { "elementType": "TextField", "name": "param1", "value": "ValueA1" },
-                                                    { "elementType": "comboBox", "name": "param2", "options": [
-                                                        { "name": "Option1", "value": 1 },
-                                                        { "name": "Option2", "value": 2 }
-                                                    ], "selectedIndex": 0},
-                                                    { "elementType": "checkBox", "name": "param3", "value": false },
-                                                    { "elementType": "radioButton", "name": "param4", "options": [
-                                                        { "name": "Option1", "value": 1 },
-                                                        { "name": "Option2", "value": 2 }
-                                                    ], "selectedIndex": 0}
-                                                ];
-                                                break;
-                                            case "B command":
-                                                newParameters = [
-                                                    { "elementType": "TextField", "name": "param1", "value": "ValueB1" },
-                                                    { "elementType": "comboBox", "name": "param2", "options": [
-                                                        { "name": "Option1", "value": 1 },
-                                                        { "name": "Option2", "value": 2 }
-                                                    ], "selectedIndex": 1}
-                                                ];
-                                                break;
-                                            case "C command":
-                                                newParameters = [
-                                                    { "elementType": "TextField", "name": "param1", "value": "ValueC1" },
-                                                    { "elementType": "radioButton", "name": "param2", "options": [
-                                                        { "name": "Option1", "value": 1 },
-                                                        { "name": "Option2", "value": 2 }
-                                                    ], "selectedIndex": 0}
-                                                ];
-                                                break;
-                                        }
+                    switch (newCommandType) {
+                        case "A command":
+                            newParameters = [
+                                { "elementType": "TextField", "name": "param1", "value": "ValueA1" },
+                                { "elementType": "comboBox", "name": "param2", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 0},
+                                { "elementType": "checkBox", "name": "param3", "value": false },
+                                { "elementType": "radioButton", "name": "param4", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 0}
+                            ];
+                            break;
+                        case "B command":
+                            newParameters = [
+                                { "elementType": "TextField", "name": "param1", "value": "ValueB1" },
+                                { "elementType": "comboBox", "name": "param2", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 1}
+                            ];
+                            break;
+                        case "C command":
+                            newParameters = [
+                                { "elementType": "TextField", "name": "param1", "value": "ValueC1" },
+                                { "elementType": "radioButton", "name": "param2", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 0}
+                            ];
+                            break;
+                    }
 
-                                        customModel.items.push({
-                                            "commandType": newCommandType,
-                                            "parameters": newParameters,
-                                            "expanded": true
-                                        });
-                                        customModel.filteredItems = customModel.items; // Trigger update
+                    customModel.items.push({
+                        "commandType": newCommandType,
+                        "parameters": newParameters,
+                        "expanded": true
+                    });
+                    customModel.filteredItems = customModel.items; // Trigger update
                 }
             }
         }
 
         ListView {
+            id: listView
             Layout.fillWidth: true
             Layout.fillHeight: true
             model: customModel.filteredItems.length
@@ -164,21 +165,65 @@ ApplicationWindow {
                         width: parent.width
                         height: 50
                         color: "lightgray"
-                        Text {
-                            text: customModel.filteredItems[commandElement.commandIndex]["commandType"]
-                            font.bold: false
-                            font.pointSize: 14
-                            anchors.centerIn: parent
-                        }
-                        MouseArea {
+                        RowLayout {
                             anchors.fill: parent
-                            onClicked: {
-                                var customModelTemp = customModel.items;
-                                customModelTemp[commandElement.commandIndex]["expanded"] = !customModelTemp[commandElement.commandIndex]["expanded"];
-                                customModel.items = customModelTemp;
-                                customModel.filteredItems = customModel.filteredItems; // Trigger update
+                            spacing: 10
+
+                            Text {
+                                text: customModel.filteredItems[commandElement.commandIndex]["commandType"]
+                                font.bold: false
+                                font.pointSize: 14
+                                Layout.alignment: Qt.AlignLeft
+                                Layout.fillWidth: true
+                            }
+
+                            Button {
+                                text: "Delete"
+                                Layout.alignment: Qt.AlignRight
+                                onClicked: {
+                                    customModel.items.splice(commandElement.commandIndex, 1);
+                                    customModel.filteredItems = customModel.items; // Trigger update
+                                }
+                            }
+
+                            Button {
+                                text: "Add Below"
+                                Layout.alignment: Qt.AlignRight
+                                onClicked: {
+                                    addPopup.commandIndex = commandElement.commandIndex;
+                                    addPopup.visible = true;
+                                }
+                            }
+
+                            Button {
+                                text: "Move Up"
+                                Layout.alignment: Qt.AlignRight
+                                enabled: commandElement.commandIndex > 0
+                                onClicked: {
+                                    moveItem(customModel.items, commandElement.commandIndex, commandElement.commandIndex - 1);
+                                    customModel.filteredItems = customModel.items; // Trigger update
+                                }
+                            }
+
+                            Button {
+                                text: "Move Down"
+                                Layout.alignment: Qt.AlignRight
+                                enabled: commandElement.commandIndex < customModel.filteredItems.length - 1
+                                onClicked: {
+                                    moveItem(customModel.items, commandElement.commandIndex, commandElement.commandIndex + 1);
+                                    customModel.filteredItems = customModel.items; // Trigger update
+                                }
                             }
                         }
+//                        MouseArea {
+//                            anchors.fill: parent
+//                            onClicked: {
+//                                var customModelTemp = customModel.items;
+//                                customModelTemp[commandElement.commandIndex]["expanded"] = !customModelTemp[commandElement.commandIndex]["expanded"];
+//                                customModel.items = customModelTemp;
+//                                customModel.filteredItems = customModel.filteredItems; // Trigger update
+//                            }
+//                        }
                     }
 
                     GridView {
@@ -256,6 +301,95 @@ ApplicationWindow {
         }
     }
 
+    Popup {
+        id: addPopup
+        width: 300
+        height: 200
+        modal: true
+        closePolicy: Popup.CloseOnEscape
+        property int commandIndex: -1
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 10
+            //padding: 10
+
+            Text {
+                text: "Select Command Type"
+                font.bold: true
+                font.pointSize: 16
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            ComboBox {
+                id: popupCommandTypeComboBox
+                Layout.fillWidth: true
+                model: ["A command", "B command", "C command"]
+            }
+
+            Button {
+                text: "OK"
+                Layout.preferredHeight: 40
+                Layout.alignment: Qt.AlignRight
+                onClicked: {
+                    var newCommandType = popupCommandTypeComboBox.currentText;
+                    var newParameters;
+
+                    switch (newCommandType) {
+                        case "A command":
+                            newParameters = [
+                                { "elementType": "TextField", "name": "param1", "value": "ValueA1" },
+                                { "elementType": "comboBox", "name": "param2", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 0},
+                                { "elementType": "checkBox", "name": "param3", "value": false },
+                                { "elementType": "radioButton", "name": "param4", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 0}
+                            ];
+                            break;
+                        case "B command":
+                            newParameters = [
+                                { "elementType": "TextField", "name": "param1", "value": "ValueB1" },
+                                { "elementType": "comboBox", "name": "param2", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 1}
+                            ];
+                            break;
+                        case "C command":
+                            newParameters = [
+                                { "elementType": "TextField", "name": "param1", "value": "ValueC1" },
+                                { "elementType": "radioButton", "name": "param2", "options": [
+                                    { "name": "Option1", "value": 1 },
+                                    { "name": "Option2", "value": 2 }
+                                ], "selectedIndex": 0}
+                            ];
+                            break;
+                    }
+
+                    customModel.items.splice(addPopup.commandIndex + 1, 0, {
+                        "commandType": newCommandType,
+                        "parameters": newParameters,
+                        "expanded": true
+                    });
+                    customModel.filteredItems = customModel.items; // Trigger update
+
+                    addPopup.visible = false;
+                }
+            }
+
+            Button {
+                text: "Cancel"
+                Layout.preferredHeight: 40
+                Layout.alignment: Qt.AlignRight
+                onClicked: addPopup.visible = false
+            }
+        }
+    }
+
     Component {
         id: textFieldComponent
         GTTextField {}
@@ -272,5 +406,16 @@ ApplicationWindow {
     Component {
         id: checkBoxComponent
         GTCheckBox {}
+    }
+
+    function moveItem(array, fromIndex, toIndex) {
+        if (toIndex >= array.length) {
+            var k = toIndex - array.length + 1;
+            while (k--) {
+                array.push(undefined);
+            }
+        }
+        array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
+        customModel.filteredItems = array; // Trigger update
     }
 }
