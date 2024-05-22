@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>GTTextField.qml</file>
+        <file>GTRadioButtons.qml</file>
+        <file>Parameter.qml</file>
+        <file>GTComboBox.qml</file>
+        <file>GTCheckBox.qml</file>
+    </qresource>
+</RCC>
