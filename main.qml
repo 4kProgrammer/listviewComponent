@@ -79,6 +79,63 @@ ApplicationWindow {
                     });
                 }
             }
+
+            ComboBox {
+                id: commandTypeComboBox
+                Layout.preferredWidth: 150
+                model: ["A command", "B command", "C command"]
+            }
+
+            Button {
+                text: "Add Command"
+                Layout.preferredHeight: 40
+                onClicked: {
+                    var newCommandType = commandTypeComboBox.currentText;
+                                        var newParameters;
+
+                                        switch (newCommandType) {
+                                            case "A command":
+                                                newParameters = [
+                                                    { "elementType": "TextField", "name": "param1", "value": "ValueA1" },
+                                                    { "elementType": "comboBox", "name": "param2", "options": [
+                                                        { "name": "Option1", "value": 1 },
+                                                        { "name": "Option2", "value": 2 }
+                                                    ], "selectedIndex": 0},
+                                                    { "elementType": "checkBox", "name": "param3", "value": false },
+                                                    { "elementType": "radioButton", "name": "param4", "options": [
+                                                        { "name": "Option1", "value": 1 },
+                                                        { "name": "Option2", "value": 2 }
+                                                    ], "selectedIndex": 0}
+                                                ];
+                                                break;
+                                            case "B command":
+                                                newParameters = [
+                                                    { "elementType": "TextField", "name": "param1", "value": "ValueB1" },
+                                                    { "elementType": "comboBox", "name": "param2", "options": [
+                                                        { "name": "Option1", "value": 1 },
+                                                        { "name": "Option2", "value": 2 }
+                                                    ], "selectedIndex": 1}
+                                                ];
+                                                break;
+                                            case "C command":
+                                                newParameters = [
+                                                    { "elementType": "TextField", "name": "param1", "value": "ValueC1" },
+                                                    { "elementType": "radioButton", "name": "param2", "options": [
+                                                        { "name": "Option1", "value": 1 },
+                                                        { "name": "Option2", "value": 2 }
+                                                    ], "selectedIndex": 0}
+                                                ];
+                                                break;
+                                        }
+
+                                        customModel.items.push({
+                                            "commandType": newCommandType,
+                                            "parameters": newParameters,
+                                            "expanded": true
+                                        });
+                                        customModel.filteredItems = customModel.items; // Trigger update
+                }
+            }
         }
 
         ListView {
