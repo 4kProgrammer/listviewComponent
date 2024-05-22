@@ -47,6 +47,13 @@ ApplicationWindow {
         ]
 
         property var filteredItems: items
+
+        function getUniqueCommandTypes() {
+            var commandTypes = items.map(function(item) {
+                return item.commandType;
+            });
+            return commandTypes.filter((value, index, self) => self.indexOf(value) === index);
+        }
     }
 
     ColumnLayout {
@@ -136,6 +143,20 @@ ApplicationWindow {
                     customModel.filteredItems = customModel.items; // Trigger update
                 }
             }
+
+            Button {
+                text: "Filter Commands"
+                Layout.preferredHeight: 40
+                onClicked: filterPopup.open()
+            }
+
+            Button {
+                text: "Clear All Filters"
+                Layout.preferredHeight: 40
+                onClicked: {
+                    customModel.filteredItems = customModel.items
+                }
+            }
         }
 
         ScrollView {
@@ -221,15 +242,15 @@ ApplicationWindow {
                                 }
                             }
 
-//                            MouseArea {
-//                                anchors.fill: parent
-//                                onClicked: {
-//                                    var customModelTemp = customModel.items;
-//                                    customModelTemp[commandElement.commandIndex]["expanded"] = !customModelTemp[commandElement.commandIndex]["expanded"];
-//                                    customModel.items = customModelTemp;
-//                                    customModel.filteredItems = customModel.filteredItems; // Trigger update
-//                                }
-//                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    var customModelTemp = customModel.items;
+                                    customModelTemp[commandElement.commandIndex]["expanded"] = !customModelTemp[commandElement.commandIndex]["expanded"];
+                                    customModel.items = customModelTemp;
+                                    customModel.filteredItems = customModel.filteredItems; // Trigger update
+                                }
+                            }
                         }
 
                         GridView {
@@ -413,6 +434,65 @@ ApplicationWindow {
     Component {
         id: checkBoxComponent
         GTCheckBox {}
+    }
+
+    Popup {
+        id: filterPopup
+        width: 300
+        height: 200
+        modal: true
+        closePolicy: Popup.CloseOnEscape
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 10
+
+            Text {
+                text: "Filter Command Types"
+                font.bold: true
+                font.pointSize: 16
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            Repeater {
+                id: filterRepeater
+                model: customModel.getUniqueCommandTypes()
+
+                CheckBox {
+                    text: modelData
+                    checked: true
+                }
+            }
+
+            Button {
+                text: "Apply Filter"
+                Layout.preferredHeight: 40
+                Layout.alignment: Qt.AlignRight
+                onClicked: {
+                    var selectedCommandTypes = [];
+                    for (var i = 0; i < filterRepeater.count; i++) {
+                        var checkBox = filterRepeater.itemAt(i);
+                        if (checkBox.checked) {
+                            selectedCommandTypes.push(checkBox.text);
+                        }
+                    }
+                    customModel.filteredItems = customModel.items.filter(function(item) {
+                        return selectedCommandTypes.indexOf(item.commandType) !== -1;
+                    });
+                    filterPopup.close();
+                }
+            }
+
+            Button {
+                text: "Clear All Filters"
+                Layout.preferredHeight: 40
+                Layout.alignment: Qt.AlignRight
+                onClicked: {
+                    customModel.filteredItems = customModel.items;
+                    filterPopup.close();
+                }
+            }
+        }
     }
 
     function moveItem(array, fromIndex, toIndex) {
