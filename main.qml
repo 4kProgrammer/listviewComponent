@@ -30,7 +30,7 @@ ApplicationWindow {
                     { "elementType": "comboBox", "name": "param2", "options": [
                             { "name": "Option1", "value": 1 },
                             { "name": "Option2", "value": 2 }
-                        ], "selectedIndex": 2},
+                        ], "selectedIndex": 1},
                 ], "expanded": true },
 
             { "commandType": "C command", "parameters": [
@@ -138,159 +138,166 @@ ApplicationWindow {
             }
         }
 
-        ListView {
-            id: listView
+        ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            model: customModel.filteredItems.length
-            spacing: 20
-            delegate: Rectangle {
-                id: commandElement
+
+            ListView {
+                id: listView
                 width: parent.width
-                property int commandIndex: index
-                color: "red"
-                height: {
-                    if (customModel.filteredItems[commandElement.commandIndex]["expanded"]) {
-                        85 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2 + 50
-                    } else {
-                        50 // Only height of the title when collapsed
-                    }
-                }
-
-                Column {
+                height: parent.height
+                model: customModel.filteredItems.length
+                spacing: 20
+                clip: true
+                delegate: Rectangle {
+                    id: commandElement
                     width: parent.width
-                    spacing: 10
-
-                    Rectangle {
-                        width: parent.width
-                        height: 50
-                        color: "lightgray"
-                        RowLayout {
-                            anchors.fill: parent
-                            spacing: 10
-
-                            Text {
-                                text: customModel.filteredItems[commandElement.commandIndex]["commandType"]
-                                font.bold: false
-                                font.pointSize: 14
-                                Layout.alignment: Qt.AlignLeft
-                                Layout.fillWidth: true
-                            }
-
-                            Button {
-                                text: "Delete"
-                                Layout.alignment: Qt.AlignRight
-                                onClicked: {
-                                    customModel.items.splice(commandElement.commandIndex, 1);
-                                    customModel.filteredItems = customModel.items; // Trigger update
-                                }
-                            }
-
-                            Button {
-                                text: "Add Below"
-                                Layout.alignment: Qt.AlignRight
-                                onClicked: {
-                                    addPopup.commandIndex = commandElement.commandIndex;
-                                    addPopup.visible = true;
-                                }
-                            }
-
-                            Button {
-                                text: "Move Up"
-                                Layout.alignment: Qt.AlignRight
-                                enabled: commandElement.commandIndex > 0
-                                onClicked: {
-                                    moveItem(customModel.items, commandElement.commandIndex, commandElement.commandIndex - 1);
-                                    customModel.filteredItems = customModel.items; // Trigger update
-                                }
-                            }
-
-                            Button {
-                                text: "Move Down"
-                                Layout.alignment: Qt.AlignRight
-                                enabled: commandElement.commandIndex < customModel.filteredItems.length - 1
-                                onClicked: {
-                                    moveItem(customModel.items, commandElement.commandIndex, commandElement.commandIndex + 1);
-                                    customModel.filteredItems = customModel.items; // Trigger update
-                                }
-                            }
+                    property int commandIndex: index
+                    color: "red"
+                    height: {
+                        if (customModel.filteredItems[commandElement.commandIndex]["expanded"]) {
+                            85 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2 + 50
+                        } else {
+                            50 // Only height of the title when collapsed
                         }
-//                        MouseArea {
-//                            anchors.fill: parent
-//                            onClicked: {
-//                                var customModelTemp = customModel.items;
-//                                customModelTemp[commandElement.commandIndex]["expanded"] = !customModelTemp[commandElement.commandIndex]["expanded"];
-//                                customModel.items = customModelTemp;
-//                                customModel.filteredItems = customModel.filteredItems; // Trigger update
-//                            }
-//                        }
                     }
 
-                    GridView {
-                        id: parameterContainer
+                    Column {
                         width: parent.width
-                        height: 85 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2
-                        model: customModel.filteredItems[commandElement.commandIndex]["parameters"].length
-                        visible: customModel.filteredItems[commandElement.commandIndex]["expanded"] // Show/hide GridView based on expanded state
-                        cellWidth: width / 2 // Set cell width to half the GridView width
-                        cellHeight: 40 // Set cell height as needed
+                        spacing: 10
 
-                        delegate: Component {
-                            Loader {
-                                property int elemtIndex: index
-                                property string elementType: customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["elementType"]
+                        Rectangle {
+                            width: parent.width
+                            height: 50
+                            color: "lightgray"
+                            RowLayout {
+                                anchors.fill: parent
+                                spacing: 10
 
-                                sourceComponent: switch(elementType) {
-                                                 case "TextField": return textFieldComponent
-                                                 case "radioButton": return radioButtonComponent
-                                                 case "comboBox": return comboBoxComponent
-                                                 case "checkBox": return checkBoxComponent
-                                                 }
+                                Text {
+                                    text: customModel.filteredItems[commandElement.commandIndex]["commandType"]
+                                    font.bold: false
+                                    font.pointSize: 14
+                                    Layout.alignment: Qt.AlignLeft
+                                    Layout.fillWidth: true
+                                }
 
-                                onLoaded: {
-                                    item.width = 500
-                                    item.height = 50
+                                Button {
+                                    text: "Delete"
+                                    Layout.alignment: Qt.AlignRight
+                                    onClicked: {
+                                        customModel.items.splice(commandElement.commandIndex, 1);
+                                        customModel.filteredItems = customModel.items; // Trigger update
+                                    }
+                                }
 
-                                    switch(elementType) {
-                                        case "TextField":
-                                            item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                            item.paramValue = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["value"]
-                                            item.clicked.connect(function() {
-                                                console.log("Item clicked: " + item.paramName)
-                                            })
-                                            item.textChanged.connect(function(newText) {
-                                                console.log("Text changed in " + item.paramName + ": " + newText)
-                                            })
-                                            break
+                                Button {
+                                    text: "Add Below"
+                                    Layout.alignment: Qt.AlignRight
+                                    onClicked: {
+                                        addPopup.commandIndex = commandElement.commandIndex;
+                                        addPopup.visible = true;
+                                    }
+                                }
 
-                                        case "radioButton":
-                                            item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                            item.paramOptions = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["options"]
-                                            item.selectedIndex = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["selectedIndex"]
+                                Button {
+                                    text: "Move Up"
+                                    Layout.alignment: Qt.AlignRight
+                                    enabled: commandElement.commandIndex > 0
+                                    onClicked: {
+                                        moveItem(customModel.items, commandElement.commandIndex, commandElement.commandIndex - 1);
+                                        customModel.filteredItems = customModel.items; // Trigger update
+                                    }
+                                }
 
-                                            item.optionChanged.connect(function(newOption, newOptionName) {
-                                                console.log("Option changed in " + item.paramName + ": " + newOption + ":" + newOptionName)
-                                            })
-                                            break
+                                Button {
+                                    text: "Move Down"
+                                    Layout.alignment: Qt.AlignRight
+                                    enabled: commandElement.commandIndex < customModel.filteredItems.length - 1
+                                    onClicked: {
+                                        moveItem(customModel.items, commandElement.commandIndex, commandElement.commandIndex + 1);
+                                        customModel.filteredItems = customModel.items; // Trigger update
+                                    }
+                                }
+                            }
 
-                                        case "comboBox":
-                                            item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                            item.paramOptions = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["options"]
-                                            item.selectedIndex = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["selectedIndex"]
+//                            MouseArea {
+//                                anchors.fill: parent
+//                                onClicked: {
+//                                    var customModelTemp = customModel.items;
+//                                    customModelTemp[commandElement.commandIndex]["expanded"] = !customModelTemp[commandElement.commandIndex]["expanded"];
+//                                    customModel.items = customModelTemp;
+//                                    customModel.filteredItems = customModel.filteredItems; // Trigger update
+//                                }
+//                            }
+                        }
 
-                                            item.optionChanged.connect(function(newOption, newOptionName) {
-                                                console.log("ComboBox option changed in " + item.paramName + ": " + newOption + " (" + newOptionName + ")")
-                                            })
-                                            break
+                        GridView {
+                            id: parameterContainer
+                            width: parent.width
+                            height: 85 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2
+                            model: customModel.filteredItems[commandElement.commandIndex]["parameters"].length
+                            visible: customModel.filteredItems[commandElement.commandIndex]["expanded"] // Show/hide GridView based on expanded state
+                            cellWidth: width / 2 // Set cell width to half the GridView width
+                            cellHeight: 40 // Set cell height as needed
 
-                                        case "checkBox":
-                                            item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                            item.paramValue = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["value"]
+                            delegate: Component {
+                                Loader {
+                                    property int elemtIndex: index
+                                    property string elementType: customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["elementType"]
 
-                                            item.stateChanged.connect(function(newState) {
-                                                console.log("CheckBox state changed in " + item.paramName + ": " + newState)
-                                            })
-                                            break
+                                    sourceComponent: switch(elementType) {
+                                                     case "TextField": return textFieldComponent
+                                                     case "radioButton": return radioButtonComponent
+                                                     case "comboBox": return comboBoxComponent
+                                                     case "checkBox": return checkBoxComponent
+                                                     }
+
+                                    onLoaded: {
+                                        item.width = 500
+                                        item.height = 50
+
+                                        switch(elementType) {
+                                            case "TextField":
+                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
+                                                item.paramValue = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["value"]
+                                                item.clicked.connect(function() {
+                                                    console.log("Item clicked: " + item.paramName)
+                                                })
+                                                item.textChanged.connect(function(newText) {
+                                                    console.log("Text changed in " + item.paramName + ": " + newText)
+                                                })
+                                                break
+
+                                            case "radioButton":
+                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
+                                                item.paramOptions = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["options"]
+                                                item.selectedIndex = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["selectedIndex"]
+
+                                                item.optionChanged.connect(function(newOption, newOptionName) {
+                                                    console.log("Option changed in " + item.paramName + ": " + newOption + ":" + newOptionName)
+                                                })
+                                                break
+
+                                            case "comboBox":
+                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
+                                                item.paramOptions = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["options"]
+                                                item.selectedIndex = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["selectedIndex"]
+
+                                                item.optionChanged.connect(function(newOption, newOptionName) {
+                                                    console.log("ComboBox option changed in " + item.paramName + ": " + newOption + " (" + newOptionName + ")")
+                                                })
+                                                break
+
+                                            case "checkBox":
+                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
+                                                item.paramValue = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["value"]
+
+                                                item.stateChanged.connect(function(newState) {
+                                                    console.log("CheckBox state changed in " + item.paramName + ": " + newState)
+                                                })
+                                                break
+                                        }
                                     }
                                 }
                             }
