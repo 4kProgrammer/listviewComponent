@@ -1,6 +1,6 @@
-import QtQuick 2.9
+import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.3
+import QtQuick.Layouts 1.12
 import QtQml 2.0
 
 ApplicationWindow {
@@ -13,36 +13,36 @@ ApplicationWindow {
         id: customModel
         property var items: [
             { "commandType": "A command", "parameters": [
-                    { "elementType": "TextField", "name": "param1", "value": "Value1" },
-                    { "elementType": "comboBox", "name": "param2", "options": [
+                    { "category": "", "elementType": "TextField", "name": "param1", "value": "Value1" },
+                    { "category": "", "elementType": "comboBox", "name": "param2", "options": [
                             { "name": "Option1", "value": 1 },
                             { "name": "Option2", "value": 2 }
                         ], "selectedIndex": 0},
-                    { "elementType": "checkBox", "name": "param3", "value": true },
-                    { "elementType": "radioButton", "name": "param4", "options": [
+                    { "category": "Settings", "elementType": "checkBox", "name": "param3", "value": true },
+                    { "category": "Settings", "elementType": "radioButton", "name": "param4", "options": [
                             { "name": "Option1", "value": 1 },
                             { "name": "Option2", "value": 2 }
-                        ], "selectedIndex": 0},
+                        ], "selectedIndex": 0}
                 ], "expanded": true },
 
             { "commandType": "B command", "parameters": [
-                    { "elementType": "TextField", "name": "param1", "value": "Value1" },
-                    { "elementType": "comboBox", "name": "param2", "options": [
+                    { "category": "General", "elementType": "TextField", "name": "param1", "value": "Value1" },
+                    { "category": "General", "elementType": "comboBox", "name": "param2", "options": [
                             { "name": "Option1", "value": 1 },
                             { "name": "Option2", "value": 2 }
-                        ], "selectedIndex": 1},
+                        ], "selectedIndex": 1}
                 ], "expanded": true },
 
             { "commandType": "C command", "parameters": [
-                    { "elementType": "TextField", "name": "param1", "value": "Value1" },
-                    { "elementType": "radioButton", "name": "param2", "options": [
+                    { "category": "General", "elementType": "TextField", "name": "param1", "value": "Value1" },
+                    { "category": "Settings", "elementType": "radioButton", "name": "param2", "options": [
                             { "name": "Option1", "value": 1 },
                             { "name": "Option2", "value": 2 }
                         ], "selectedIndex": 1},
-                    { "elementType": "radioButton", "name": "param3", "options": [
+                    { "category": "Settings", "elementType": "radioButton", "name": "param3", "options": [
                             { "name": "Option1", "value": 1 },
                             { "name": "Option2", "value": 2 }
-                        ], "selectedIndex": 0},
+                        ], "selectedIndex": 0}
                 ], "expanded": true }
         ]
 
@@ -101,45 +101,45 @@ ApplicationWindow {
                     var newParameters;
 
                     switch (newCommandType) {
-                        case "A command":
-                            newParameters = [
-                                { "elementType": "TextField", "name": "param1", "value": "ValueA1" },
-                                { "elementType": "comboBox", "name": "param2", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 0},
-                                { "elementType": "checkBox", "name": "param3", "value": false },
-                                { "elementType": "radioButton", "name": "param4", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 0}
-                            ];
-                            break;
-                        case "B command":
-                            newParameters = [
-                                { "elementType": "TextField", "name": "param1", "value": "ValueB1" },
-                                { "elementType": "comboBox", "name": "param2", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 1}
-                            ];
-                            break;
-                        case "C command":
-                            newParameters = [
-                                { "elementType": "TextField", "name": "param1", "value": "ValueC1" },
-                                { "elementType": "radioButton", "name": "param2", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 0}
-                            ];
-                            break;
+                    case "A command":
+                        newParameters = [
+                                    { "category": "", "elementType": "TextField", "name": "param1", "value": "ValueA1" },
+                                    { "category": "", "elementType": "comboBox", "name": "param2", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 0},
+                                    { "category": "Settings", "elementType": "checkBox", "name": "param3", "value": false },
+                                    { "category": "Settings", "elementType": "radioButton", "name": "param4", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 0}
+                                ];
+                        break;
+                    case "B command":
+                        newParameters = [
+                                    { "category": "General", "elementType": "TextField", "name": "param1", "value": "ValueB1" },
+                                    { "category": "General", "elementType": "comboBox", "name": "param2", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 1}
+                                ];
+                        break;
+                    case "C command":
+                        newParameters = [
+                                    { "category": "General", "elementType": "TextField", "name": "param1", "value": "ValueC1" },
+                                    { "category": "Settings", "elementType": "radioButton", "name": "param2", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 0}
+                                ];
+                        break;
                     }
 
                     customModel.items.push({
-                        "commandType": newCommandType,
-                        "parameters": newParameters,
-                        "expanded": true
-                    });
+                                               "commandType": newCommandType,
+                                               "parameters": newParameters,
+                                               "expanded": true
+                                           });
                     customModel.filteredItems = customModel.items; // Trigger update
                 }
             }
@@ -174,17 +174,21 @@ ApplicationWindow {
                     id: commandElement
                     width: parent.width
                     property int commandIndex: index
-                    color: "red"
+                    color: "transparent"
                     height: {
                         if (customModel.filteredItems[commandElement.commandIndex]["expanded"]) {
-                            85 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2 + 50
+                            //150 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2 + 50
+                            listviewElement.calcGridviewHeight + 50
                         } else {
                             50 // Only height of the title when collapsed
                         }
                     }
 
                     Column {
+                        id:listviewElement
+                        property int calcGridviewHeight: 50
                         width: parent.width
+                        anchors.fill: parent
                         spacing: 10
 
                         Rectangle {
@@ -194,6 +198,14 @@ ApplicationWindow {
                             RowLayout {
                                 anchors.fill: parent
                                 spacing: 10
+
+                                Button {
+                                    text: customModel.filteredItems[commandElement.commandIndex]["expanded"] ? "Collapse" : "Expand"
+                                    onClicked: {
+                                        customModel.items[commandElement.commandIndex]["expanded"] = !customModel.items[commandElement.commandIndex]["expanded"];
+                                        customModel.filteredItems = customModel.filteredItems; // Trigger update
+                                    }
+                                }
 
                                 Text {
                                     text: customModel.filteredItems[commandElement.commandIndex]["commandType"]
@@ -241,31 +253,21 @@ ApplicationWindow {
                                     }
                                 }
                             }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    var customModelTemp = customModel.items;
-                                    customModelTemp[commandElement.commandIndex]["expanded"] = !customModelTemp[commandElement.commandIndex]["expanded"];
-                                    customModel.items = customModelTemp;
-                                    customModel.filteredItems = customModel.filteredItems; // Trigger update
-                                }
-                            }
                         }
 
-                        GridView {
+                        Flickable {
                             id: parameterContainer
                             width: parent.width
-                            height: 85 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2
-                            model: customModel.filteredItems[commandElement.commandIndex]["parameters"].length
+                            //height: 150 * customModel.filteredItems[commandElement.commandIndex]["parameters"].length / 2
+                            height: listviewElement.calcGridviewHeight
                             visible: customModel.filteredItems[commandElement.commandIndex]["expanded"] // Show/hide GridView based on expanded state
-                            cellWidth: width / 2 // Set cell width to half the GridView width
-                            cellHeight: 40 // Set cell height as needed
-
-                            delegate: Component {
+                            property int columns: 2
+                            property var sectionList: customModel.filteredItems[commandElement.commandIndex].parameters
+                            property Component itemDelegate:  Component {
                                 Loader {
                                     property int elemtIndex: index
-                                    property string elementType: customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["elementType"]
+                                    property var param
+                                    property string elementType: param["elementType"]
 
                                     sourceComponent: switch(elementType) {
                                                      case "TextField": return textFieldComponent
@@ -279,46 +281,98 @@ ApplicationWindow {
                                         item.height = 50
 
                                         switch(elementType) {
-                                            case "TextField":
-                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                                item.paramValue = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["value"]
-                                                item.clicked.connect(function() {
-                                                    console.log("Item clicked: " + item.paramName)
-                                                })
-                                                item.textChanged.connect(function(newText) {
-                                                    console.log("Text changed in " + item.paramName + ": " + newText)
-                                                })
-                                                break
+                                        case "TextField":
+                                            item.paramName = param["name"]
+                                            item.paramValue = param["value"]
+                                            item.clicked.connect(function() {
+                                                console.log("Item clicked: " + item.paramName)
+                                            })
+                                            item.textChanged.connect(function(newText) {
+                                                console.log("Text changed in " + item.paramName + ": " + newText)
+                                            })
+                                            break
 
-                                            case "radioButton":
-                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                                item.paramOptions = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["options"]
-                                                item.selectedIndex = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["selectedIndex"]
+                                        case "radioButton":
+                                            item.paramName = param["name"]
+                                            item.paramOptions = param["options"]
+                                            item.selectedIndex = param["selectedIndex"]
 
-                                                item.optionChanged.connect(function(newOption, newOptionName) {
-                                                    console.log("Option changed in " + item.paramName + ": " + newOption + ":" + newOptionName)
-                                                })
-                                                break
+                                            item.optionChanged.connect(function(newOption, newOptionName) {
+                                                console.log("Option changed in " + item.paramName + ": " + newOption + ":" + newOptionName)
+                                            })
+                                            break
 
-                                            case "comboBox":
-                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                                item.paramOptions = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["options"]
-                                                item.selectedIndex = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["selectedIndex"]
+                                        case "comboBox":
+                                            item.paramName = param["name"]
+                                            item.paramOptions = param["options"]
+                                            item.selectedIndex = param["selectedIndex"]
 
-                                                item.optionChanged.connect(function(newOption, newOptionName) {
-                                                    console.log("ComboBox option changed in " + item.paramName + ": " + newOption + " (" + newOptionName + ")")
-                                                })
-                                                break
+                                            item.optionChanged.connect(function(newOption, newOptionName) {
+                                                console.log("ComboBox option changed in " + item.paramName + ": " + newOption + " (" + newOptionName + ")")
+                                            })
+                                            break
 
-                                            case "checkBox":
-                                                item.paramName = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["name"]
-                                                item.paramValue = customModel.filteredItems[commandElement.commandIndex]["parameters"][elemtIndex]["value"]
+                                        case "checkBox":
+                                            item.paramName = param["name"]
+                                            item.paramValue = param["value"]
 
-                                                item.stateChanged.connect(function(newState) {
-                                                    console.log("CheckBox state changed in " + item.paramName + ": " + newState)
-                                                })
-                                                break
+                                            item.stateChanged.connect(function(newState) {
+                                                console.log("CheckBox state changed in " + item.paramName + ": " + newState)
+                                            })
+                                            break
                                         }
+                                    }
+                                }
+                            }
+                            property Component sectionDelegate: Rectangle {
+                                height: 20
+                                width: 500
+                                color: "red"
+                                property string title
+                                z:1000
+                                Text {
+                                    text: title
+                                    font.bold: false
+                                    font.pointSize: 10
+                                    width: parent.width
+                                    height: 20
+                                    color: "blue"
+                                }
+                            }
+                            property Component spaceDelegate: Item {
+                                height: 10
+                                width: 500
+                                Rectangle {
+                                    width: parent.width
+                                    height: 20
+                                    color: "blue"
+                                    z:5
+                                }
+                            }
+                            contentHeight: layout.height
+                            contentWidth: layout.width
+                            flickableDirection: Flickable.VerticalFlick
+
+                            GridLayout {
+                                id: layout
+
+                                columns: parameterContainer.columns
+                                columnSpacing: 0
+                                rowSpacing: 0
+                                Component.onCompleted: {
+                                    var lastSection = ""
+                                    listviewElement.calcGridviewHeight = 0
+                                    for (var i = 0; i < parameterContainer.sectionList.length; i++) {
+                                        var element = parameterContainer.sectionList[i].category
+                                        console.log("lastSection"+element)
+                                        if (element !== lastSection) {
+                                            parameterContainer.sectionDelegate.createObject(layout, {"Layout.columnSpan": parameterContainer.columns, "index": i, "title": element})
+                                            parameterContainer.spaceDelegate.createObject(layout, {"Layout.columnSpan": parameterContainer.columns, "index": i})
+                                            listviewElement.calcGridviewHeight += 30
+                                        }
+                                        parameterContainer.itemDelegate.createObject(layout, {"index": i, "param": parameterContainer.sectionList[i], "Layout.columnSpan": 1})
+                                        lastSection = element
+                                        listviewElement.calcGridviewHeight += 25
                                     }
                                 }
                             }
@@ -364,45 +418,45 @@ ApplicationWindow {
                     var newParameters;
 
                     switch (newCommandType) {
-                        case "A command":
-                            newParameters = [
-                                { "elementType": "TextField", "name": "param1", "value": "ValueA1" },
-                                { "elementType": "comboBox", "name": "param2", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 0},
-                                { "elementType": "checkBox", "name": "param3", "value": false },
-                                { "elementType": "radioButton", "name": "param4", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 0}
-                            ];
-                            break;
-                        case "B command":
-                            newParameters = [
-                                { "elementType": "TextField", "name": "param1", "value": "ValueB1" },
-                                { "elementType": "comboBox", "name": "param2", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 1}
-                            ];
-                            break;
-                        case "C command":
-                            newParameters = [
-                                { "elementType": "TextField", "name": "param1", "value": "ValueC1" },
-                                { "elementType": "radioButton", "name": "param2", "options": [
-                                    { "name": "Option1", "value": 1 },
-                                    { "name": "Option2", "value": 2 }
-                                ], "selectedIndex": 0}
-                            ];
-                            break;
+                    case "A command":
+                        newParameters = [
+                                    { "category": "General", "elementType": "TextField", "name": "param1", "value": "ValueA1" },
+                                    { "category": "General", "elementType": "comboBox", "name": "param2", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 0},
+                                    { "category": "Settings", "elementType": "checkBox", "name": "param3", "value": false },
+                                    { "category": "Settings", "elementType": "radioButton", "name": "param4", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 0}
+                                ];
+                        break;
+                    case "B command":
+                        newParameters = [
+                                    { "category": "General", "elementType": "TextField", "name": "param1", "value": "ValueB1" },
+                                    { "category": "General", "elementType": "comboBox", "name": "param2", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 1}
+                                ];
+                        break;
+                    case "C command":
+                        newParameters = [
+                                    { "category": "General", "elementType": "TextField", "name": "param1", "value": "ValueC1" },
+                                    { "category": "Settings", "elementType": "radioButton", "name": "param2", "options": [
+                                            { "name": "Option1", "value": 1 },
+                                            { "name": "Option2", "value": 2 }
+                                        ], "selectedIndex": 0}
+                                ];
+                        break;
                     }
 
                     customModel.items.splice(addPopup.commandIndex + 1, 0, {
-                        "commandType": newCommandType,
-                        "parameters": newParameters,
-                        "expanded": true
-                    });
+                                                 "commandType": newCommandType,
+                                                 "parameters": newParameters,
+                                                 "expanded": true
+                                             });
                     customModel.filteredItems = customModel.items; // Trigger update
 
                     addPopup.visible = false;
